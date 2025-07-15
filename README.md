@@ -32,7 +32,7 @@ Construído com:
 1. **Clone o repositório**:
 
 ```bash
-git clone https://github.com/seu-usuario/chatbot-gemini.git
+git clone https://github.com/rsmwall/chatbot-gemini.git
 cd chatbot-gemini
 ```
 
@@ -67,8 +67,8 @@ Abra no navegador: http://localhost:4567
 ├── .env                # Chave da API
 ├── Gemfile             # Gems necessárias
 ├── public/
-│   └── index.html      # Frontend HTML + Tailwind
-└── README.md           # Este arquivo
+│   └── index.html     # Frontend HTML + Tailwind
+└── README.md
 ```
 
 ## Modelo Utilizado
