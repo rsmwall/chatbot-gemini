@@ -1,69 +1,65 @@
-# app.rb
-require "sinatra/base"
-require "json"
-require "base64"
-require "dotenv/load"
-require "gemini-ai"
+require 'sinatra'
+require 'json'
+require 'net/http'
+require 'uri'
+require 'dotenv/load'
 
-class ChatbotApp < Sinatra::Base
-  configure do
-    # inicializa cliente Gemini com chave da API via .env
-    set :client, Gemini.new(
-      credentials: {
-        service: "generative-language-api",
-        api_key: ENV.fetch("GEMINI_API_KEY")
-      },
-      options: {
-        model: "gemini-2.5-flash",
-        server_sent_events: false
+GEMINI_API_KEY = ENV.fetch("GEMINI_API_KEY")
+GEMINI_MODEL = "gemini-2.5-flash" 
+GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/#{GEMINI_MODEL}:generateContent"
+
+set :public_folder, File.dirname(__FILE__) + '/public'
+
+get "/" do
+  send_file File.join(settings.public_folder, 'index.html')
+end
+
+post "/chat" do
+  content_type :json
+
+  data = JSON.parse(request.body.read)
+  message = data["message"]
+  image_base64 = data["image_base64"]
+
+  parts = []
+
+  if image_base64 && !image_base64.empty?
+    parts << {
+      inlineData: {
+        mimeType: "image/jpeg",
+        data: image_base64
       }
-    )
+    }
   end
 
-  get "/" do
-    redirect "/public/index.html"
-  end  
-
-  post "/chat" do
-    content_type :json
-    payload = if request.media_type == "application/json"
-                JSON.parse(request.body.read)
-              else
-                {
-                  "message" => params["message"],
-                  "history" => JSON.parse(params["history"] || "[]"),
-                  "is_image" => false
-                }
-              end
-
-    history = payload["history"]
-    # adiciona a mensagem do usuário ao histórico
-    history << { "role" => "user", "content" => payload["message"], "is_image" => payload["is_image"] }
-
-    # prepara nodes para a API, texto ou imagem
-    contents = history.map do |m|
-      if m["is_image"]
-        { role: m["role"], parts: [{ inlineData: { data: m["content"] } }] }
-      else
-        { role: m["role"], parts: [{ text: m["content"] }] }
-      end
-    end
-
-    resp = settings.client.generate_content({ contents: contents })
-    candidate = resp["candidates"].first["content"]
-    reply = { "role" => "model", "parts" => [] }
-    candidate["parts"].each do |part|
-      if part["text"]
-        reply["parts"] << { "text" => part["text"] }
-      elsif part["inlineData"] && part["inlineData"]["data"]
-        reply["parts"] << { "image_base64" => part["inlineData"]["data"] }
-      end
-    end
-
-    history << reply
-    { reply: reply, history: history }.to_json
+  if message && !message.empty?
+    parts << { text: message }
   end
 
-  # faz o app rodar se for executado diretamente
-  run! if __FILE__ == $0
+  body = {
+    contents: [
+      {
+        role: "user",
+        parts: parts
+      }
+    ]
+  }
+
+  uri = URI("#{GEMINI_ENDPOINT}?key=#{GEMINI_API_KEY}")
+  http = Net::HTTP.new(uri.host, uri.port)
+  http.use_ssl = true
+
+  request_http = Net::HTTP::Post.new(uri, { 'Content-Type': 'application/json' })
+  request_http.body = JSON.dump(body)
+
+  response = http.request(request_http)
+  result = JSON.parse(response.body)
+
+  if result["candidates"]
+    content = result["candidates"].first.dig("content", "parts", 0, "text")
+    { reply: content }.to_json
+  else
+    status 500
+    { error: result["error"] || "Resposta inesperada da API" }.to_json
+  end
 end

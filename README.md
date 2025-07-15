@@ -1,93 +1,86 @@
-# chatbot-geminChatbot Gemini com Sinatra (Ruby)
+# 🤖 Chatbot com Gemini (Texto + Imagem)
 
-Um chatbot multimodal (texto + imagem) usando Ruby, Sinatra, Tailwind e a API Gemini da Google.
+Este é um projeto simples de chatbot utilizando a API do **Gemini** (Google AI), que permite o envio de **mensagens de texto e imagens**. A IA responde com uma análise da imagem ou responde ao texto enviado. Desenvolvido como trabalho final da disciplina de Inteligência Artificial do Instituto Federal do Piauí.
 
-### Tecnologias e dependências
+Construído com:
+- [Google Gemini API (v1beta)](https://ai.google.dev/)
+- [Sinatra](https://sinatrarb.com/) (Ruby)
+- [Tailwind CSS](https://tailwindcss.com/) no frontend
 
-    Ruby 3.x
+---
 
-    Sinatra (microframework web em Ruby)
-    GitHub+13GitHub+13rubydoc.info+13
-    The Ruby Toolbox+12Wikipedia+12GitHub+12
+## Funcionalidades
 
-    sinatra-contrib (helper json)
+- Envie **texto** e receba respostas da IA.
+- Envie uma **imagem** e receba uma **descrição** da imagem.
+- Combine **texto + imagem** para descrições contextuais.
+- Interface responsiva com Tailwind CSS.
 
-    dotenv (para carregar a chave API via .env)
+---
 
-    gemini-ai (gem oficial para usar a API Gemini)
-    GitHub
-    GitHub
-    GitHub+1GitHub+1
+## Instalação
 
-    Tailwind CSS (frontend estilo moderno-chat)
+### Pré-requisitos
 
-### Instalação
+- [Ruby](https://www.ruby-lang.org/pt/downloads/) (3.4 ou superior)
+- Bundler
+- Conta na [Google AI](https://ai.google.dev/)
+- Chave de API do Gemini
 
-Clone o repositório:
+### Passo a passo
 
-git clone <repo_url>
+1. **Clone o repositório**:
+
+```bash
+git clone https://github.com/seu-usuario/chatbot-gemini.git
 cd chatbot-gemini
+```
 
-Adicione o Gemfile com:
+2. **Instale as dependências**:
 
-gem 'sinatra'
-gem 'sinatra-contrib'
-gem 'dotenv'
-gem 'gemini-ai', '~> 4.2.0'
-
-Execute:
-
+```bash
 bundle install
+```
 
-Crie o arquivo .env na raiz com sua chave:
+3. **Configure a chave da API**:
 
-GEMINI_API_KEY=SEU_TOKEN_AQUI
+Crie um arquivo .env na raiz do projeto com sua chave:
 
-🖥️ Estrutura do Projeto
+```
+GEMINI_API_KEY=sua_chave_aqui
+```
 
-chatbot-gemini/
-│
-├── app.rb           # Backend em Sinatra
-├── Gemfile
-├── .env
-└── public/
-    └── index.html  # Frontend com Tailwind + JS
+4. **Execute o servidor**:
 
-### Backend (app.rb)
+```bash
+ruby app.rb
+```
 
-    Serve o frontend (index.html)
+5. **Acesse o chat**:
 
-    Rota POST /chat que espera JSON com histórico e envia para a API Gemini
+Abra no navegador: http://localhost:4567
 
-    Usa modelo "models/gemini-2.5-flash" (formato exigido pela API)
-    GitHub+7GitHub+7The Ruby Toolbox+7
-    The Ruby Toolbox+2Google AI Developers Forum+2GitHub+2
-    GitHub+2Wikipedia+2GitHub+2
+## Estrutura do Projeto
 
-    Retorna JSON com reply.parts
+├── app.rb              # Backend Sinatra
+├── .env                # Chave da API
+├── Gemfile             # Gems necessárias
+├── public/
+│   └── index.html      # Frontend HTML + Tailwind
+└── README.md           # Este arquivo
 
-    Imprime no terminal o log raw da resposta Gemini para diagnóstico
+## Modelo Utilizado
 
-### Frontend (public/index.html)
+Este projeto usa o modelo gemini-2.5-flash, que aceita texto e imagem simultaneamente.
 
-    Interface estilo ChatGPT com bolhas de mensagem (texto ou imagem)
+Você pode trocar para outro modelo na constante GEMINI_MODEL dentro do app.rb.
 
-    Upload de imagem via botão 📷 que converte para Base64
+## Contribuições
 
-    Envios via fetch('/chat')
+Pull requests são bem-vindos! Se encontrar bugs ou tiver sugestões, abra uma issue.
 
-    Exibe as respostas do modelo nas bolhas adequadas
+## Autor
 
-### Como usar
-
-    Execute o servidor:
-
-bundle exec ruby app.rb
-
-Acesse: http://localhost:4567/
-
-Envie uma mensagem de texto ou imagem.
-
-Respostas do Gemini aparecem como chat.
-
-Verifique logs no terminal com "Gemini raw response:" para checar o JSON retornado.
+Rafael Ribeiro da Silva
+[Github](https://github.com/rsmwall)
+[Bluesky](https://bsky.app/profile/rsmwall.dev)
