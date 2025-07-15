@@ -1,4 +1,4 @@
-# 🤖 Chatbot com Gemini (Texto + Imagem)
+# Chatbot com Gemini (Texto + Imagem)
 
 Este é um projeto simples de chatbot utilizando a API do **Gemini** (Google AI), que permite o envio de **mensagens de texto e imagens**. A IA responde com uma análise da imagem ou responde ao texto enviado. Desenvolvido como trabalho final da disciplina de Inteligência Artificial do Instituto Federal do Piauí.
 
@@ -62,12 +62,14 @@ Abra no navegador: http://localhost:4567
 
 ## Estrutura do Projeto
 
+```
 ├── app.rb              # Backend Sinatra
 ├── .env                # Chave da API
 ├── Gemfile             # Gems necessárias
 ├── public/
 │   └── index.html      # Frontend HTML + Tailwind
 └── README.md           # Este arquivo
+```
 
 ## Modelo Utilizado
 
